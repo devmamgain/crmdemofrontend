@@ -28,8 +28,8 @@ export default function Dashboard() {
         </div>
         {loading ? <Skeleton className="mt-4 h-12" /> : (
           <dl className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-5">
-            {[['Valuations run', data.valuation.analyses], ['Assets valued', data.valuation.assets?.toLocaleString()], ['Total recovery value', money(data.valuation.recoveryValue)],
-            ['Recommended buy price', money(data.valuation.buyValue)], ['Estimated margin', money(data.valuation.margin)]].map(([k2, v]) => (
+            {[['Valuations run', data?.valuation?.analyses], ['Assets valued', data?.valuation?.assets?.toLocaleString()], ['Total recovery value', money(data?.valuation?.recoveryValue)],
+            ['Recommended buy price', money(data?.valuation?.buyValue)], ['Estimated margin', money(data?.valuation?.margin)]].map(([k2, v]) => (
               <div key={k2}><dt className="text-xs text-slate-500">{k2}</dt><dd className="mt-1 text-lg font-semibold text-slate-900">{v}</dd></div>
             ))}
           </dl>
@@ -42,7 +42,7 @@ export default function Dashboard() {
           <h2 className="text-sm font-semibold text-slate-900">Deals pipeline summary</h2>
           <ul className="mt-3 divide-y divide-slate-100">
             {loading ? Array.from({ length: 6 }, (_, i) => <li key={i} className="py-3"><Skeleton className="h-5" /></li>) :
-              data.pipeline.map((s) => (
+              data?.pipeline.map((s) => (
                 <li key={s.stage} className="flex items-center justify-between py-2.5 text-sm">
                   <StageBadge value={s.stage} />
                   <span className="text-slate-500">{s.count} deals</span>
@@ -56,7 +56,7 @@ export default function Dashboard() {
           <div className="mt-4 h-64">
             {loading ? <Skeleton className="h-full w-full" /> : (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data.pipeline.map((p) => ({ ...p, label: stageLabel(p.stage) }))} margin={{ left: 0, right: 8 }}>
+                <BarChart data={data?.pipeline.map((p) => ({ ...p, label: stageLabel(p.stage) }))} margin={{ left: 0, right: 8 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                   <XAxis dataKey="label" tickLine={false} axisLine={false} fontSize={11} />
                   <YAxis tickLine={false} axisLine={false} fontSize={12} tickFormatter={(v) => `$${v / 1000}k`} width={48} />
@@ -78,7 +78,7 @@ export default function Dashboard() {
                 {['Salesperson', 'Leads', 'Active deals', 'Won deals', 'Pipeline value', 'Won revenue'].map((h) => <th key={h} className="th">{h}</th>)}
               </tr></thead>
               <tbody className="divide-y divide-slate-100">
-                {data.salesPerformance.map((p) => (
+                {data?.salesPerformance.map((p) => (
                   <tr key={p.salespersonId} className="hover:bg-slate-50">
                     <td className="td font-medium text-slate-900"><Owner person={p} /></td>
                     <td className="td">{p.leads}</td><td className="td">{p.activeDeals}</td><td className="td">{p.wonDeals}</td>
