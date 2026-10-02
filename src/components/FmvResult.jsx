@@ -4,6 +4,7 @@ import { KpiCard, Badge, Spinner } from './ui.jsx';
 import { money, money2 } from '../utils/format.js';
 
 const MATCH = { exact: ['green', 'Exact'], normalized: ['blue', 'Normalized'], fuzzy: ['amber', 'Approx. match'] };
+const soldDate = (d) => (d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : '—');
 const num = (v) => (v === undefined || v === null ? '—' : money2(v));
 
 export function InsightsCard({ insights }) {
@@ -66,7 +67,7 @@ export default function FmvResult({ analysis, onAddMarketData, onRerun, rerunnin
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-200">
             <thead className="bg-slate-50"><tr>
-              {['Uploaded asset → matched model', 'Category', 'Grade', 'Qty', 'Comparables', 'FMV / Unit', 'Recovery Value', 'Buy Price', 'Resale Value', 'Margin'].map((h, i) => <th key={h} className={`th ${i >= 3 ? 'text-right' : ''}`}>{h}</th>)}
+              {['Uploaded asset → matched model', 'Category', 'Grade', 'Qty', 'Comparables', 'Last Sold', 'Sold Date', 'FMV / Unit', 'Recovery Value', 'Buy Price', 'Resale Value', 'Margin'].map((h, i) => <th key={h} className={`th ${i >= 3 ? 'text-right' : ''}`}>{h}</th>)}
             </tr></thead>
             <tbody className="divide-y divide-slate-100">
               {items.map((it, idx) => {
@@ -86,6 +87,8 @@ export default function FmvResult({ analysis, onAddMarketData, onRerun, rerunnin
                     <td className="td">{it.condition}{it.conditionAssumed && <span className="ml-1 text-xs text-slate-400" title="Condition missing or unrecognised; assumed Good">(assumed)</span>}</td>
                     <td className="td text-right">{it.quantity}</td>
                     <td className="td whitespace-nowrap text-right text-xs">{ok && st ? <><span className="font-medium text-slate-900">{st.sampleCount}</span> · {money(st.min)}–{money(st.max)}</> : '—'}</td>
+                    <td className="td text-right">{ok && it.lastSoldPrice != null ? money(it.lastSoldPrice) : '—'}</td>
+                    <td className="td whitespace-nowrap text-right">{ok ? soldDate(it.lastSoldDate) : '—'}</td>
                     <td className="td text-right">{ok ? money2(it.fmvPerUnit) : 'N/A'}</td>
                     <td className="td text-right font-medium text-slate-900">{ok ? money2(it.totalFMV) : 'N/A'}</td>
                     <td className="td text-right">{ok ? money2(it.recommendedBuy) : 'N/A'}</td>
@@ -97,7 +100,7 @@ export default function FmvResult({ analysis, onAddMarketData, onRerun, rerunnin
             </tbody>
             {valued.length > 0 && (
               <tfoot className="bg-slate-50 text-sm font-semibold text-slate-900"><tr>
-                <td className="td" colSpan={3}>Total (valued lines)</td><td className="td text-right">{valued.reduce((n, i) => n + i.quantity, 0)}</td><td className="td" /><td className="td" />
+                <td className="td" colSpan={3}>Total (valued lines)</td><td className="td text-right">{valued.reduce((n, i) => n + i.quantity, 0)}</td><td className="td" /><td className="td" /><td className="td" /><td className="td" />
                 <td className="td text-right">{money2(s.estimatedMarketValue)}</td><td className="td text-right">{money2(s.recommendedBuyValue)}</td>
                 <td className="td text-right">{num(s.estimatedResaleValue)}</td><td className="td text-right text-emerald-700">{money2(s.estimatedPotentialMargin)}</td>
               </tr></tfoot>
